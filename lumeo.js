@@ -144,4 +144,4 @@ const bindAttributes = (element) => {
 document.addEventListener("DOMContentLoaded", handleBootstrap);
 
 // Exporting the Lumeo function
-module.exports = { Lumeo : lumeo };
+module.exports = lumeo;
