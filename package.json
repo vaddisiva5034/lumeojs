@@ -1,0 +1,11 @@
+{
+  "name": "lumeojs",
+  "version": "1.0.0",
+  "description": "LumeoJS is a lightweight JavaScript library that provides reactive data binding for web applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kiran Vaddi",
+  "license": "ISC"
+}
