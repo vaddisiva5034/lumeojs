@@ -1,4 +1,3 @@
-
 # LumeoJS
 
 ## Overview
@@ -26,6 +25,7 @@ npm install lumeojs
 You can also include LumeoJS via a CDN. Use one of the following URLs:
 
 - jsDelivr:
+
   ```html
   <script src="https://cdn.jsdelivr.net/npm/lumeojs"></script>
   ```
@@ -49,12 +49,12 @@ You can also include LumeoJS via a CDN. Use one of the following URLs:
 
    ```html
    <script>
-       // Initialize Lumeo with your state
-       Lumeo((state) => {
-           state.name = "World";
-           state.isVisible = true;
-           state.message = "Welcome to LumeoJS!";
-       });
+     // Initialize Lumeo with your state
+     Lumeo((state) => {
+       state.name = "World";
+       state.isVisible = true;
+       state.message = "Welcome to LumeoJS!";
+     });
    </script>
    ```
 
@@ -89,11 +89,11 @@ In your JavaScript:
 
 ```html
 <script>
-   Lumeo((state) => {
-       state.handleClick = () => {
-           alert('Button clicked!');
-       };
-   });
+  Lumeo((state) => {
+    state.handleClick = () => {
+      alert("Button clicked!");
+    };
+  });
 </script>
 ```
 
@@ -109,9 +109,9 @@ In your JavaScript:
 
 ```html
 <script>
-   Lumeo((state) => {
-       state.isVisible = true; // or false to hide
-   });
+  Lumeo((state) => {
+    state.isVisible = true; // or false to hide
+  });
 </script>
 ```
 
@@ -135,12 +135,11 @@ In your JavaScript:
 
 ```html
 <script>
-   Lumeo((state) => {
-       state.message = "Welcome to LumeoJS!";
-   });
+  Lumeo((state) => {
+    state.message = "Welcome to LumeoJS!";
+  });
 </script>
 ```
-
 
 ## API
 
@@ -156,6 +155,6 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## Support
 
-If you have any questions or need support, feel free to open an issue on the [GitHub repository](https://github.com/yourusername/lumeojs).
+If you have any questions or need support, feel free to open an issue on the [GitHub repository](https://github.com/vaddisiva5034/lumeojs).
 
 ---
