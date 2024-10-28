@@ -1,0 +1,16 @@
+{
+  "name": "lumojs-src",
+  "version": "1.0.0",
+  "main": "lumeo.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Running test command\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

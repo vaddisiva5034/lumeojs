@@ -4,7 +4,6 @@
   "description": "LumeoJS is a lightweight JavaScript library that provides reactive data binding for web applications",
   "main": "dist/lumeo.bundle.js",
   "scripts": {
-    "build": "webpack",
     "test": "echo \"Running test command\""
   },
   "homepage": "https://lumeojs.netlify.app/",
@@ -15,10 +14,6 @@
   },
   "author": "Kiran Vaddi",
   "license": "ISC",
-  "devDependencies": {
-    "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
-  },
   "files": [
     "dist/lumeo.bundle.js"
   ],

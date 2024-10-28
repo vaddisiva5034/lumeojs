@@ -8,13 +8,15 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Cache node modules
         uses: actions/cache@v4
         with:
@@ -22,27 +24,17 @@ jobs:
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
-      - run: |
-          cd lumeojs
-          npm install
-      - run: |
-          cd lumeojs
-          npm test
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
       - run: |
+          cd lumeojs-src
+          npm install
+          npm test
+          npm run build
+
+      - name: Publish to NPM
+        run: |
           cd lumeojs
           npm ci
-      - run: |
-          cd lumeojs
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_LUMEO_TOKEN }}

@@ -1,48 +1,47 @@
 const watcherDep = {};
+
 // Create a proxy to watch changes on the object and trigger callbacks
 const createReactiveObject = (target, callback) =>
   new Proxy(target, {
     set(obj, prop, value) {
-      const oldValue = obj[prop];
-      if (oldValue !== value) {
+      if (obj[prop] !== value) {
+        const oldValue = obj[prop];
         obj[prop] = value;
         callback(prop, oldValue, value);
         // Trigger watcher callbacks
-        if (watcherDep[prop]) {
-          watcherDep[prop].forEach((cb) => cb(value));
-        }
+        watcherDep[prop]?.forEach((cb) => cb(value));
       }
       return true;
     },
   });
 
-const variables = createReactiveObject({}, (key) => {
-  // Not needed here as it's handled in the setter
-});
+const variables = createReactiveObject({}, () => {});
 
 const lumeo = (fn) => fn(variables);
 
-const handleBootstrap = () => {
-  const bodyElement = document.body;
-  initializeBindings(bodyElement);
+const handleBootstrap = () => initializeBindings(document.body);
+
+const evalueExpression = (key) => {
+  const expression = variables[key];
+  return typeof expression === "function" ? expression() : expression;
 };
 
 // Initialize bindings on all elements
 const initializeBindings = (element) => {
-  for (const child of element.children) {
+  Array.from(element.children).forEach((child) => {
     bindModel(child);
     bindTemplate(child);
     bindEventHandlers(child);
     bindConditionalRendering(child);
     bindAttributes(child);
-  }
+  });
 };
+
 // Bind input elements using l-model
 const bindModel = (element) => {
   if (element.tagName === "INPUT" && element.hasAttribute("l-model")) {
     const modelName = element.getAttribute("l-model");
     element.value = variables[modelName] || "";
-
     element.addEventListener("input", (e) => {
       variables[modelName] = e.target.value;
     });
@@ -55,25 +54,21 @@ const bindTemplate = (element) => {
   const regex = /\{\{(.*?)\}\}/g;
   const matches = [...originalTemplate.matchAll(regex)];
 
-  if (matches.length > 0) {
+  if (matches.length) {
     const updateTemplate = () => {
-      let updatedText = originalTemplate;
-
-      matches.forEach((match) => {
+      element.innerText = matches.reduce((text, match) => {
         const key = match[1].trim();
-        updatedText = updatedText.replace(
+        return text.replace(
           new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, "g"),
-          variables[key] || ""
+          evalueExpression(key) || ""
         );
-      });
-
-      element.innerText = updatedText;
+      }, originalTemplate);
     };
 
     // Register dependencies for reactivity
     matches.forEach((match) => {
       const key = match[1].trim();
-      if (!watcherDep[key]) watcherDep[key] = [];
+      watcherDep[key] = watcherDep[key] || [];
       watcherDep[key].push(updateTemplate);
     });
 
@@ -84,8 +79,7 @@ const bindTemplate = (element) => {
 
 // Bind events like on-click, on-change, etc.
 const bindEventHandlers = (element) => {
-  const attributes = element.getAttributeNames();
-  attributes.forEach((attr) => {
+  element.getAttributeNames().forEach((attr) => {
     if (attr.startsWith("on-")) {
       const eventType = attr.slice(3);
       const callbackName = element.getAttribute(attr);
@@ -112,38 +106,29 @@ const bindConditionalRendering = (element) => {
     };
 
     updateDisplay(variables[condition] || false);
-
-    if (!watcherDep[condition]) watcherDep[condition] = [];
+    watcherDep[condition] = watcherDep[condition] || [];
     watcherDep[condition].push(updateDisplay);
   }
 };
 
 // Handle other attributes starting with l- but not on- for binding values
 const bindAttributes = (element) => {
-  const attributes = element.getAttributeNames();
-
-  attributes.forEach((attr) => {
+  element.getAttributeNames().forEach((attr) => {
     if (!attr.startsWith("l-") && !attr.startsWith("on-")) {
       const attributeValue = element.getAttribute(attr);
       if (attributeValue.startsWith(":")) {
         const key = attributeValue.slice(1);
-        element.setAttribute(
-          attr,
-          typeof variables[key] === "function"
-            ? variables[key]()
-            : variables[key]
-        );
-
-        if (!watcherDep[key]) watcherDep[key] = [];
-        watcherDep[key].push((newValue) => {
+        const updateAttribute = () => {
           element.setAttribute(
             attr,
             typeof variables[key] === "function"
               ? variables[key]()
               : variables[key]
           );
-          element.setAttribute(attr, newValue);
-        });
+        };
+        updateAttribute();
+        watcherDep[key] = watcherDep[key] || [];
+        watcherDep[key].push(updateAttribute);
       }
     }
   });
