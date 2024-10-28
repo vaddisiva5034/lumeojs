@@ -1,20 +1,31 @@
 {
   "name": "lumeojs",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "LumeoJS is a lightweight JavaScript library that provides reactive data binding for web applications",
   "main": "dist/lumeo.bundle.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "test": "echo \"Running test command\""
   },
   "homepage": "https://lumeojs.netlify.app/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vaddisiva5034/lumeojs.git"
+    "url": "https://github.com/vaddisiva5034/lumeojs.git",
+    "directory": "lumojs-src"
   },
   "author": "Kiran Vaddi",
   "license": "ISC",
   "devDependencies": {
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
-  }
+  },
+  "files": [
+    "dist/lumeo.bundle.js"
+  ],
+  "keywords": [
+    "reactive",
+    "data binding",
+    "javascript library",
+    "lightweight"
+  ]
 }
