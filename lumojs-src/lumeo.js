@@ -85,7 +85,6 @@ const bindTemplate = (element) => {
 // Bind events like on-click, on-change, etc.
 const bindEventHandlers = (element) => {
   const attributes = element.getAttributeNames();
-
   attributes.forEach((attr) => {
     if (attr.startsWith("on-")) {
       const eventType = attr.slice(3);
