@@ -6,6 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://lumeojs.netlify.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vaddisiva5034/lumeojs.git"
+  },
   "author": "Kiran Vaddi",
   "license": "ISC",
   "devDependencies": {
