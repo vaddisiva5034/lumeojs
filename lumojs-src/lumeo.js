@@ -37,7 +37,6 @@ const initializeBindings = (element) => {
     bindAttributes(child);
   }
 };
-
 // Bind input elements using l-model
 const bindModel = (element) => {
   if (element.tagName === "INPUT" && element.hasAttribute("l-model")) {
