@@ -4,7 +4,7 @@
   "description": "LumeoJS is a lightweight JavaScript library that provides reactive data binding for web applications",
   "main": "dist/lumeo.bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "homepage": "https://lumeojs.netlify.app/",
   "repository": {
