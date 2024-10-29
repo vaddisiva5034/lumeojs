@@ -29,7 +29,8 @@ jobs:
           cd lumeojs-src
           npm test
       - run: |
-          cd lumeojs-src build
+          cd lumeojs-src 
+          npm build
 
   publish-npm:
     needs: build
