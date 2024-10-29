@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "lumeo.js",
   "scripts": {
+    "dev": "nodemon --watch './**/*' -e js,css,html --exec 'npm run build'",
     "build": "webpack",
     "test": "echo \"Running test command\""
   },

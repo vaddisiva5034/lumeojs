@@ -8,23 +8,22 @@
   </head>
   <body>
     <input type="text" l-model="name" placeholder="Enter your name" />
-    <p> {{ getName }} {{name}}!</p>
+    <p>{{ getName() }} {{name}}!</p>
     <p l-show="isVisible">This is visible!</p>
-    <p title=":getName">Hover over me!</p>
+    <p title=":getName()">Hover over me!</p>
     <button on-click="handleToggle">toggle visible</button>
-    </h1>
     <script>
       // Initialize Lumeo with your state
       Lumeo((state) => {
         state.name = "World";
         state.isVisible = true;
         state.message = "Welcome ";
-        state.handleToggle=function(){
+        state.handleToggle = function () {
           state.isVisible = !state.isVisible;
-        }
-        state.getName= function(){
+        };
+        state.getName = function () {
           return state.message;
-        }
+        };
       });
     </script>
   </body>

@@ -21,9 +21,9 @@ const lumeo = (fn) => fn(variables);
 
 const handleBootstrap = () => initializeBindings(document.body);
 
-const evalueExpression = (key) => {
-  const expression = variables[key];
-  return typeof expression === "function" ? expression() : expression;
+const evaluateExpression = (expression) => {
+  const func = new Function(...Object.keys(variables), `return ${expression};`);
+  return func(...Object.values(variables));
 };
 
 // Initialize bindings on all elements
@@ -58,9 +58,11 @@ const bindTemplate = (element) => {
     const updateTemplate = () => {
       element.innerText = matches.reduce((text, match) => {
         const key = match[1].trim();
+        let tempKey = key.replace("(", "\\(");
+        tempKey = tempKey.replace(")", "\\)");
         return text.replace(
-          new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, "g"),
-          evalueExpression(key) || ""
+          new RegExp(`\\{\\{\\s*${tempKey}\\s*\\}\\}`, "g"),
+          evaluateExpression(key) || ""
         );
       }, originalTemplate);
     };
@@ -119,12 +121,7 @@ const bindAttributes = (element) => {
       if (attributeValue.startsWith(":")) {
         const key = attributeValue.slice(1);
         const updateAttribute = () => {
-          element.setAttribute(
-            attr,
-            typeof variables[key] === "function"
-              ? variables[key]()
-              : variables[key]
-          );
+          element.setAttribute(attr, evaluateExpression(key));
         };
         updateAttribute();
         watcherDep[key] = watcherDep[key] || [];
