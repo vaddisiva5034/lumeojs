@@ -1,6 +1,6 @@
 {
   "name": "lumeojs",
-  "version": "0.0.1-devlopment",
+  "version": "0.1.0",
   "description": "LumeoJS is a lightweight JavaScript library that provides reactive data binding for web applications",
   "main": "dist/lumeo.bundle.js",
   "scripts": {
