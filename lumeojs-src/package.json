@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "lumeo.js",
   "scripts": {
-    "dev": "nodemon --watch './**/*' -e js,css,html --exec 'npm run build'",
+    "dev": "NODE_ENV=development nodemon --watch './**/*' -e js,css,html --exec 'npm run build --'",
     "build": "webpack",
     "test": "echo \"Running test command\""
   },
@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
   }

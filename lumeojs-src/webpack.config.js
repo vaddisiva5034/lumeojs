@@ -1,4 +1,6 @@
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
+
 module.exports = {
   entry: "./lumeo", // Adjust path accordingly
   output: {
@@ -7,5 +9,20 @@ module.exports = {
     library: "Lumeo", // This makes it available as a global variable
     libraryTarget: "umd",
   },
-  mode: "production", // Use 'development' for debugging
+  mode: process.env.NODE_ENV === "development" ? "development" : "production",
+  optimization: {
+    minimize: true, // Enable minimization
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true, // Remove console logs in production
+          },
+        },
+      }),
+    ],
+    splitChunks: {
+      chunks: "all", // This enables code splitting
+    },
+  },
 };

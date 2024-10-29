@@ -1,25 +1,34 @@
 const watcherDep = {};
 
 // Create a proxy to watch changes on the object and trigger callbacks
-const createReactiveObject = (target, callback) =>
+const createReactiveObject = (target) =>
   new Proxy(target, {
     set(obj, prop, value) {
       if (obj[prop] !== value) {
-        const oldValue = obj[prop];
         obj[prop] = value;
-        callback(prop, oldValue, value);
         // Trigger watcher callbacks
         watcherDep[prop]?.forEach((cb) => cb(value));
       }
       return true;
     },
   });
-
-const variables = createReactiveObject({}, () => {});
+const variables = createReactiveObject({});
 
 const lumeo = (fn) => fn(variables);
 
-const handleBootstrap = () => initializeBindings(document.body);
+const handleBootstrap = () => {
+  try {
+    initializeBindings(document.body);
+  } catch (err) {
+    console.log("errr ", err.message);
+  }
+};
+
+const bindReactivity = (condition, cb, onLoadValue) => {
+  onLoadValue ? cb(onLoadValue) : cb();
+  watcherDep[condition] = watcherDep[condition] || [];
+  watcherDep[condition].push(cb);
+};
 
 const evaluateExpression = (expression) => {
   const func = new Function(...Object.keys(variables), `return ${expression};`);
@@ -58,24 +67,16 @@ const bindTemplate = (element) => {
     const updateTemplate = () => {
       element.innerText = matches.reduce((text, match) => {
         const key = match[1].trim();
-        let tempKey = key.replace("(", "\\(");
-        tempKey = tempKey.replace(")", "\\)");
+        let tempKey = key.replace("(", "\\(").replace(")", "\\)");
         return text.replace(
           new RegExp(`\\{\\{\\s*${tempKey}\\s*\\}\\}`, "g"),
           evaluateExpression(key) || ""
         );
       }, originalTemplate);
     };
-
-    // Register dependencies for reactivity
     matches.forEach((match) => {
-      const key = match[1].trim();
-      watcherDep[key] = watcherDep[key] || [];
-      watcherDep[key].push(updateTemplate);
+      bindReactivity(match[1].trim(), updateTemplate);
     });
-
-    // Initial rendering
-    updateTemplate();
   }
 };
 
@@ -85,14 +86,9 @@ const bindEventHandlers = (element) => {
     if (attr.startsWith("on-")) {
       const eventType = attr.slice(3);
       const callbackName = element.getAttribute(attr);
-
       if (typeof variables[callbackName] === "function") {
         element.addEventListener(eventType, (event) => {
-          try {
-            variables[callbackName](event);
-          } catch (error) {
-            console.error(`Error in event handler for ${eventType}:`, error);
-          }
+          variables[callbackName](event);
         });
       }
     }
@@ -103,30 +99,28 @@ const bindEventHandlers = (element) => {
 const bindConditionalRendering = (element) => {
   if (element.hasAttribute("l-show")) {
     const condition = element.getAttribute("l-show");
-    const updateDisplay = (newValue) => {
-      element.style.display = newValue ? "block" : "none";
-    };
-
-    updateDisplay(variables[condition] || false);
-    watcherDep[condition] = watcherDep[condition] || [];
-    watcherDep[condition].push(updateDisplay);
+    bindReactivity(
+      condition,
+      (newValue) => {
+        element.style.display = newValue ? "block" : "none";
+      },
+      variables[condition] || false
+    );
   }
 };
 
 // Handle other attributes starting with l- but not on- for binding values
 const bindAttributes = (element) => {
   element.getAttributeNames().forEach((attr) => {
-    if (!attr.startsWith("l-") && !attr.startsWith("on-")) {
-      const attributeValue = element.getAttribute(attr);
-      if (attributeValue.startsWith(":")) {
-        const key = attributeValue.slice(1);
-        const updateAttribute = () => {
-          element.setAttribute(attr, evaluateExpression(key));
-        };
-        updateAttribute();
-        watcherDep[key] = watcherDep[key] || [];
-        watcherDep[key].push(updateAttribute);
-      }
+    if (
+      !attr.startsWith("l-") &&
+      !attr.startsWith("on-") &&
+      element.getAttribute(attr).startsWith(":")
+    ) {
+      const key = element.getAttribute(attr).slice(1);
+      bindReactivity(key, () => {
+        element.setAttribute(attr, evaluateExpression(key));
+      });
     }
   });
 };
