@@ -43,6 +43,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: |
           cd lumeojs
+          npm version minor -m "Bump minor version to %s"
+      - run: |
+          cd lumeojs
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_LUMEO_TOKEN }}
